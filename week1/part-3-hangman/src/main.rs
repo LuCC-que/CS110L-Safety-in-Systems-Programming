@@ -62,6 +62,8 @@ fn main() {
         word_so_far.push('-');
         not_guessed_words.insert(secret_word_chars[i]);
     }
+
+    //try to revise it to only using one array
     loop {
         print_word_so_far(&word_so_far);
         print_guessed_word(&guessed_words);
