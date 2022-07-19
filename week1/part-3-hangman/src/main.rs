@@ -17,6 +17,7 @@ use rand::Rng;
 use std::fs;
 use std::io;
 use std::io::Write;
+use std::collections::HashSet;
 
 const NUM_INCORRECT_GUESSES: u32 = 5;
 const WORDS_PATH: &str = "words.txt";
@@ -25,6 +26,22 @@ fn pick_a_random_word() -> String {
     let file_string = fs::read_to_string(WORDS_PATH).expect("Unable to read file.");
     let words: Vec<&str> = file_string.split('\n').collect();
     String::from(words[rand::thread_rng().gen_range(0, words.len())].trim())
+}
+
+fn print_word_so_far(word_so_far :&Vec<char>) {
+    print!("The word so far is ");
+    for c in word_so_far {
+        print!("{}", c);
+    }
+    println!("");
+}
+
+fn print_guessed_word(guessed_words :&HashSet<char>) {
+    print!("You have guessed the following letters: ");
+    for c in guessed_words {
+        print!("{}", c);
+    }
+    println!("");
 }
 
 fn main() {
@@ -37,4 +54,53 @@ fn main() {
     // println!("random word: {}", secret_word);
 
     // Your code here! :)
+    let mut word_so_far = Vec::new();
+    let mut not_guessed_words = HashSet::new();
+    let mut guessed_words = HashSet::new();
+    let mut remained_guess = NUM_INCORRECT_GUESSES;
+    for i in 0..secret_word_chars.len() {
+        word_so_far.push('-');
+        not_guessed_words.insert(secret_word_chars[i]);
+    }
+    loop {
+        print_word_so_far(&word_so_far);
+        print_guessed_word(&guessed_words);
+        println!("You have {} guesses left", remained_guess);
+        print!("Please guess a letter: ");
+        //prevent previous read in
+        // io::stdout()
+        //     .flush()
+        //     .expect("Error flushing stdout.");
+        let mut guess = String::new();
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Error reading line.");
+
+        let guess_char : Vec<char> = guess.chars().collect();
+        if not_guessed_words.contains(&guess_char[0]) {
+
+            //only take the first char, if the input is more than 1
+            not_guessed_words.remove(&guess_char[0]);
+            guessed_words.insert(guess_char[0]);
+            for i in 0..secret_word_chars.len() {
+                if secret_word_chars[i] == guess_char[0] {
+                    word_so_far[i] = guess_char[0];
+                }
+            }
+        } else {
+            remained_guess -= 1;
+            println!("Sorry, that letter is not in the word");
+        }
+        println!("");
+        if remained_guess == 0 {
+            println!("Sorry, you ran out of guesses!");
+            break;
+        }
+        if not_guessed_words.is_empty() {
+            println!("Congratulations you guessed the secret word: {}!", secret_word);
+            break;
+        }
+
+    }
+
 }
