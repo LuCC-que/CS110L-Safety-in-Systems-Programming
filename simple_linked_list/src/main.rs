@@ -1,3 +1,5 @@
+use std::fmt::{write, self};
+
 struct LinkedList{
     head: Option<Box<Node>>,
     size: usize,
@@ -75,6 +77,47 @@ impl LinkedList{
     }
 }
 
+/*
+    defining traits
+*/
+impl fmt::Display for LinkedList{
+    fn fmt(&self, f:&mut fmt::Formatter<'_>) -> fmt::Result{
+        let mut current : &Option<Box<Node>> = &self.head;
+        let mut result = String::new();
+
+        loop{
+            match current {
+                Some(node)=>{
+                    result = format!("{} {}", result, node.value);
+                    current = &node.next;
+                },
+                None => break,
+            }
+        }
+        write!(f, "{}", result)
+    }
+}
+
+/* how it really drop the memory */
+/*
+* when moving to next value, current get replaced
+* to another value, compiler automatically 
+* drop that value off
+*/
+impl Drop for LinkedList{
+    fn drop(&mut self) {
+        let mut current = self.head.take();
+        while let Some(mut node) = current{
+            
+            //moving to next value, the current out of scope
+            //then the drop occurs
+            current = node.next.take();
+            
+        }
+    }
+}
+
+
 fn main() {
 
     let x: Box<u32> = Box::new(10); //box puts value to heap
@@ -107,7 +150,7 @@ fn main() {
     print!("what is the size{}", list.get_size());
     list.display();
 
-
+    println!("using the trait to print : {}", list);
 
     
 }
