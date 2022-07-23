@@ -49,13 +49,14 @@ impl Add for Point {
 fn main() {
     let the_origin = Point::new(0.0, 0.0);
     let mut p = the_origin; // copy semantics!
+
     println!("p: {:?}, the_origin: {:?}", p, the_origin);
     println!("are they equal? => {}", p == the_origin);
     p.x += 10.0;
     println!("p: {:?}, the_origin: {:?}", p, the_origin);
     println!("are they equal? => {}", p == the_origin);
     let some_opt = Some(110);
-    
+
 
     // following doest work as the ComputeNorm is only for u32
     // let somestring = Some(String::from("Hello"));
