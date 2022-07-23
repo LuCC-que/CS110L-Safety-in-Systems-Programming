@@ -12,6 +12,8 @@ impl Point {
     }
 }
 
+//if you dont define traits from your own object
+//compiler will choose to run this one
 pub trait ComputeNorm {
     fn compute_norm(&self) -> f64 {
         //unreasonble traits
@@ -53,6 +55,12 @@ fn main() {
     println!("p: {:?}, the_origin: {:?}", p, the_origin);
     println!("are they equal? => {}", p == the_origin);
     let some_opt = Some(110);
+    
+
+    // following doest work as the ComputeNorm is only for u32
+    // let somestring = Some(String::from("Hello"));
+    // println!("norm of the hello: {}", somestring.compute_norm());
+
 
     //using the traits over the defining function
     println!("norm of some_opt: {}", some_opt.compute_norm());

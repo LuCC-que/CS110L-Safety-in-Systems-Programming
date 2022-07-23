@@ -112,6 +112,7 @@ impl Drop for LinkedList{
             //moving to next value, the current out of scope
             //then the drop occurs
             current = node.next.take();
+
             
         }
     }
