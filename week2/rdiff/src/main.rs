@@ -9,8 +9,19 @@ pub mod grid;
 /// Reads the file at the supplied path, and returns a vector of strings.
 #[allow(unused)] // TODO: delete this line when you implement this function
 fn read_file_lines(filename: &String) -> Result<Vec<String>, io::Error> {
-    unimplemented!();
     // Be sure to delete the #[allow(unused)] line above
+    let mut result = Vec::new();
+    //? is the alternative match
+    //return Ok() when things go well
+    //or return Err() when shit happens
+    let file = File::open(filename)?;
+
+    for line in io::BufReader::new(file).lines() {
+        let line_str: String = line?;
+        result.push(line_str); //legal borrow
+    }
+
+    Ok(result)
 }
 
 #[allow(unused)] // TODO: delete this line when you implement this function
