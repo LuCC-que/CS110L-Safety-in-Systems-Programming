@@ -1,4 +1,5 @@
 use grid::Grid; // For lcs()
+use std::cmp::max;
 use std::env;
 use std::fs::File; // For read_file_lines()
 use std::io::{self, BufRead}; // For read_file_lines()
@@ -7,11 +8,11 @@ use std::process;
 pub mod grid;
 
 /// Reads the file at the supplied path, and returns a vector of strings.
-#[allow(unused)] // TODO: delete this line when you implement this function
 fn read_file_lines(filename: &String) -> Result<Vec<String>, io::Error> {
     // Be sure to delete the #[allow(unused)] line above
     let mut result = Vec::new();
-    //? is the alternative match
+    //? is the alternative match for all enum,
+    // for reuslt case:
     //return Ok() when things go well
     //or return Err() when shit happens
     let file = File::open(filename)?;
@@ -24,15 +25,31 @@ fn read_file_lines(filename: &String) -> Result<Vec<String>, io::Error> {
     Ok(result)
 }
 
-#[allow(unused)] // TODO: delete this line when you implement this function
 fn lcs(seq1: &Vec<String>, seq2: &Vec<String>) -> Grid {
     // Note: Feel free to use unwrap() in this code, as long as you're basically certain it'll
     // never happen. Conceptually, unwrap() is justified here, because there's not really any error
     // condition you're watching out for (i.e. as long as your code is written correctly, nothing
     // external can go wrong that we would want to handle in higher-level functions). The unwrap()
     // calls act like having asserts in C code, i.e. as guards against programming error.
-    unimplemented!();
-    // Be sure to delete the #[allow(unused)] line above
+    let n = seq1.len();
+    let m = seq2.len();
+    let mut dp = Grid::new(n + 1, m + 1);
+
+    for i in 1..n + 1 {
+        for j in 1..m + 1 {
+            if seq1[i - 1] == seq2[j - 1] {
+                dp.set(i, j, dp.get(i - 1, j - 1).unwrap() + 1);
+            } else {
+                dp.set(
+                    i,
+                    j,
+                    max(dp.get(i - 1, j).unwrap(), dp.get(i, j - 1).unwrap()),
+                );
+            }
+        }
+    }
+
+    dp
 }
 
 #[allow(unused)] // TODO: delete this line when you implement this function
